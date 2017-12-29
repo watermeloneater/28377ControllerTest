@@ -1,3 +1,12 @@
-# 28377ControllerTest
-Test the 28377 Controller Board of Y&amp;L Lab from BJTU
-This is a test from readme-edit branch.
+ # 28377控制器测试项目（28377ControllerTest）  
+
+## 1 项目概述
+本项目用来进行28377控制器的测试，包括以下部分：  
+1. PWM信号及TZ反馈信号测试
+1. 数字量输出测试
+1. 数字量输入测试
+1. AD采样测试
+1. 通信测试
+1. 指示灯测试
+## 2 执行时间
+本项目执行时间为2017.12.12-2.18.01.31
