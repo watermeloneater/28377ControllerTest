@@ -26,4 +26,12 @@ TI例程使用的外部晶振频率为20MHz，系统时钟频率设定为200MHz�
     //    GPIO_SetupPinMux(8, GPIO_MUX_CPU1, 2);  //GPIO8 - CANTXB
     //    GPIO_SetupPinOptions(8, GPIO_OUTPUT, GPIO_PUSHPULL);
     ```  
-3. 
+3. 屏蔽CAN-B的初始化  
+    ```
+    //CANInit(CANB_BASE);
+    //CANClkSourceSelect(CANB_BASE, 0);   // 500kHz CAN-Clock
+    //CANBitRateSet(CANB_BASE, 200000000, 500000);
+    //CANIntEnable(CANB_BASE, CAN_INT_MASTER | CAN_INT_ERROR | CAN_INT_STATUS);
+    //CANGlobalIntEnable(CANB_BASE, CAN_GLB_INT_CANINT0);
+    ```
+4. 
