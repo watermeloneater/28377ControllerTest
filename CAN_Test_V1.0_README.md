@@ -1,5 +1,5 @@
-# 程序修改记录  
-* **原程序-TI例程**  
+# CAN通信测试程序修改记录  
+* **原程序-TI例程**  
 程序名称：`can_external_transmit`  
 文件路径：`ti\controlSUITE\device_support\F2837xD\v210\F2837xD_examples_Cpu1`  
 程序功能：CAN-A模块发送数据到CAN-B模块，CAN-B模块以中断方式接收数据  
