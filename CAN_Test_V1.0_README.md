@@ -3,13 +3,17 @@
 程序名称：`can_external_transmit`  
 文件路径：`ti\controlSUITE\device_support\F2837xD\v210\F2837xD_examples_Cpu1`  
 程序功能：CAN-A模块发送数据到CAN-B模块，CAN-B模块以中断方式接收数据  
+
+* **修改后程序的功能**  
+  * CAN-A模块的邮箱1设置为发送邮箱，CAN-A模块的邮箱2设置为接收邮箱  
+  * 上位机通过USB-CAN卡发送数据到接收邮箱，DSP程序检测到接收邮箱有新数据后，通过发送邮箱将该数据发送回上位机  
   
 * **修改说明**  
 1. 修改时钟频率设定函数  
 TI例程使用的外部晶振频率为20MHz，系统时钟频率设定为200MHz，用如下函数进行设置：  
-`InitSysPll(XTAL_OSC, IMULT_20, FMULT_0, PLLCLK_BY_2);`  
+    `InitSysPll(XTAL_OSC, IMULT_20, FMULT_0, PLLCLK_BY_2);`  
 而测试控制器使用的外部晶振频率为30MHz，为了保证系统时钟频率为200MHz不变，需要修改时钟频率设定函数：  
-`InitSysPll(XTAL_OSC, IMULT_20, FMULT_0, PLLCLK_BY_6);`  
+    `InitSysPll(XTAL_OSC, IMULT_20, FMULT_0, PLLCLK_BY_6);`  
 2. 修改CAN通信引脚定义  
 将CAN-A模块的接收发送引脚由30和31改为70和71，取消CAN-B引脚初始化定义  
     ```
@@ -26,12 +30,60 @@ TI例程使用的外部晶振频率为20MHz，系统时钟频率设定为200MHz�
     //    GPIO_SetupPinMux(8, GPIO_MUX_CPU1, 2);  //GPIO8 - CANTXB
     //    GPIO_SetupPinOptions(8, GPIO_OUTPUT, GPIO_PUSHPULL);
     ```  
-3. 屏蔽CAN-B的初始化  
+3. 屏蔽CAN-B的初始化和使能语句  
     ```
     //CANInit(CANB_BASE);
     //CANClkSourceSelect(CANB_BASE, 0);   // 500kHz CAN-Clock
     //CANBitRateSet(CANB_BASE, 200000000, 500000);
     //CANIntEnable(CANB_BASE, CAN_INT_MASTER | CAN_INT_ERROR | CAN_INT_STATUS);
     //CANGlobalIntEnable(CANB_BASE, CAN_GLB_INT_CANINT0);
+    //CANEnable(CANB_BASE);
     ```
-4. 
+4. 修改接收邮箱编号（原为1）、ID号（原为0x5555）和设置函数  
+    ```
+    #define RX_MSG_OBJ_ID    2
+    sRXCANMessage.ui32MsgID = 0xAAAA;
+    //    CANMessageSet(CANB_BASE, RX_MSG_OBJ_ID, &sRXCANMessage,
+    //                  MSG_OBJ_TYPE_RX);
+    CANMessageSet(CANA_BASE, RX_MSG_OBJ_ID, &sRXCANMessage,
+                  MSG_OBJ_TYPE_RX);
+    ```
+5. 屏蔽原有的发送函数，增加新的发送和接收函数  
+    ```
+    while(1)
+        {
+          uint32_t status;
+
+          //
+          // Read the CAN-A new data status
+          //
+          status = CANStatusGet(CANA_BASE, CAN_STS_NEWDAT);
+
+          //
+          // If the message object 2 has recieved a new data ,then get the received message
+          //
+          if(status == 0x10)
+          {
+            //
+          // Get the received message
+          //
+          CANMessageGet(CANA_BASE, RX_MSG_OBJ_ID, &sRXCANMessage, true);
+
+          //
+          // Copy the recieved data to the txMsgData[]
+          //
+          for(i = 0; i < MSG_DATA_LENGTH; i++)
+          {
+            txMsgData[i] = rxMsgData[i];
+          }
+
+          //
+          // Transmit Message
+          //
+          CANMessageSet(CANA_BASE, TX_MSG_OBJ_ID, &sTXCANMessage,
+                  MSG_OBJ_TYPE_TX);
+
+          }
+        }
+    ```  
+
