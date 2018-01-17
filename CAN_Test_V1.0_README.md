@@ -1,4 +1,4 @@
-# CAN通信测试程序修改记录  
+# CAN通信测试程序修改记录  
 * **原程序-TI例程**  
 程序名称：`can_external_transmit`  
 文件路径：`ti\controlSUITE\device_support\F2837xD\v210\F2837xD_examples_Cpu1`  
