@@ -9,7 +9,7 @@
   * 上位机通过USB-CAN卡发送数据到接收邮箱，DSP程序检测到接收邮箱有新数据后，将接收到的数据的每个字节加1，然后再通过发送邮箱将数据发送回上位机  
   
 * **修改说明**  
-主要修改了例程中的两个文件，[can_external_transmit.c](https://github.com/eecsfuture/28377ControllerTest/blob/master/CAN/can_external_transmit.c)和[F2837xD_SysCtrl.c]()，具体说明如下：
+主要修改了例程中的两个文件，[can_external_transmit.c](https://github.com/eecsfuture/28377ControllerTest/blob/master/CAN/can_external_transmit.c)和[F2837xD_SysCtrl.c](https://github.com/eecsfuture/28377ControllerTest/blob/master/CAN/F2837xD_SysCtrl.c)，具体说明如下：
 1. 修改时钟频率设定函数  
 TI例程使用的外部晶振频率为20MHz，系统时钟频率设定为200MHz，用如下函数进行设置：  
 `InitSysPll(XTAL_OSC, IMULT_20, FMULT_0, PLLCLK_BY_2);`  
